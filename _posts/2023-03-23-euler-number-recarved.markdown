@@ -1,8 +1,8 @@
 ---
 layout: distill
-title:  "What is *natural* about the natural logarithm?"
+title:  "What is so *natural* about the natural logarithm?"
 author: Payal
-date:   2023-03-13 23:46:17 +0100
+date:   2023-03-25 23:46:17 +0100
 
 ---
 
