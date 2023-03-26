@@ -18,7 +18,9 @@ profile:
 /*social: true  # includes social icons at the bottom of the page */
 ---
 
-The hope is that at some point, this blog will be an introduction to who I am, or who I want you to think I am.
+The hope is that at some point, this blog will be an introduction to who I am, or who I want you to think I am. 
+Although, I hope it is truer than that - and self-indulgently lets me explore and stay honest to learning and 
+processing.
 
 
 Along the professional dimension, I practice and think about ML. I specialise in ML
@@ -29,4 +31,5 @@ editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_
  will render your [publications page](/al-folio/publications/) automatically. -->
 
 
-[LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)
+
+Contact: [LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)
