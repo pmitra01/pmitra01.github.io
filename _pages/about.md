@@ -19,8 +19,7 @@ profile:
 ---
 
 The hope is that at some point, this blog will be an introduction to who I am, or who I want you to think I am. 
-Although, I hope it is truer than that - and self-indulgently lets me explore and stay honest to learning and 
-processing.
+And more crucially, that it helps me keep honest to exploring and evolving who that entity is.
 
 
 Along the professional dimension, I practice and think about ML. I specialise in ML
