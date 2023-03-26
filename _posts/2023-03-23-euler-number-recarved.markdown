@@ -68,8 +68,8 @@ to the convergence or divergence of an infinite series - something that had earl
 
 These are age-old questions and undoubtedly, countless others have pondered and `aha!`-ed over them before. However, 
 I put on blinders (mostly) and went on a self-indulgent journey to chart this well-known terrain with curiosity as 
-a steer, only looking up online references for very specific technical obstacles. Since the path of reasoning I followedas I dove into 
-is not always chronological, a timeline of key events can be found in '
+a steer, only looking up online references for very specific technical obstacles. Since the path of reasoning I 
+followed was not always tuned to chronological events in history, a timeline of key events can be found in '
 [Timeline for select discoveries around $$e$$](#timeline)'.
 
 ### Bernoulli and compound interest help approach $$e$$
@@ -109,6 +109,7 @@ Leonard Euler rewrote the above infinite series $\lim_{m->\infty}(1+\frac{1}{m})
 (Try this for yourself using the binomial theorem if you fancy). He then proved that infinite series was 
 convergent and thus by definition the value of the sum of a convergent infinite series is irrational. Euler 
 christened this irrational number as $$e$$, and the notation stuck.
+
 Let that sink in. Without the pivotal proof of the irrationality of $$e$$, we would not have a definite way to express 
 this naturally occurring constant that does not fit into our pre-defined conceptual number system of 
 finite (countable) quantities. <d-footnote>A side of unrelated gushing: I am a newly converted fan of 
@@ -144,7 +145,6 @@ growth, perfectly compounded). E is the base rate of growth shared by all contin
 whenever systems grow exponentially & continuously: population, radioactive decay, interest calculations, etc… 
 $$e$$ represents the idea that all continually growing systems are scaled versions of a common rate."
 ```
-
 Some room for poetic personal epiphany: I realised on my bike ride to the grocery store, that it is the universality 
 of a repeated action/process that births a constant. The action is constant. Here, the action of a quantity growing 
 at a fixed rate is the constant that is being repeated, and its culmination (or repeated) is expressed as the 
@@ -168,8 +168,7 @@ So, what did I re-realise?: (i) While all exponential functions ($a^{x,}a>0$) ar
 change proportional to themselves. This proportionality constant was $log_e(a)$, i.e., to a factor that is equal to 
 the power $$e$$ would have to  be raised to, in order to equal $$\a$$!. It is only at the special value of $a=e$ 
 that $log_e(e)=1$, making $\frac{\partial (e^x)}{\partial x}=e^x$. (ii) In fact, $$e^x$$ is the only function to 
-have both its derivative and integral equal to its own value. (iii) Any function that has 
-its derivative proportional to the function itself (example, our friend - the function of growth for a principal value 
+have both its derivative and integral equal to its own value. (iii) Any function that has its derivative proportional to the function itself (example, our friend - the function of growth for a principal value 
 under compound interest), is of the form ($Ca^x, a>0$), and thus has its rate of change scaled by the constant $log_e
 (a)$. This presents the theoretical premise of the observation in previous sections that all continuous growth functions are 
 scaled versions of a common rate, $$e$$.
@@ -247,21 +246,24 @@ Here are some personal deductions to supplement the proof that Napier offered in
 first particle with uniform speed covers equal amounts of distance in equal amounts of time, and thus the distance traversed by it 
 has a linear and monotonic relationship in time. However, the second particle observes a decaying speed as it is  
 proportional to the particle's distance to the terminal point, which decreases with time. Aha, now I spot the 
-exponential function! The rate of change of distance (velocity) covered for the second particle is a continuously 
-decaying function, with constant decay rate. If we study both particles for the same time durations of $\triangle{t}
-$, the first particle covers a distance that is linearly proportional to $\triangle{t}$. Thus over a series of 
-$\triangle{t}s$, the distance covered by the first particle is an arithmetic progression in $\triangle{t}$. In 
-the same $\triangle{t}$, the second particle covers a distance that is negatively proportional to itself 
-($10^7-x$). Over the same series of $\triangle{t}s$, the second particle observes a continuously decaying growth in 
-distance covered (I spy a geometric series, gasp!). In this manner, as one function (distance of Particle A) increases 
-linearly at a constant rate, the other (distance of Particle B) increases at a decreasing rate, but proportional to 
-itself. This resembled the properties you would expect from the relation between $log_e(x)$ to $e^{x}$. He in 
-fact proved that if $x=sin\theta$, then $y=log_{nap}\theta$. Further the second apple fell harder on my head 
-when I realised why Napier's log tables were to the base $$\frac{1}{e}$$, and not $$e$$. By virtue of Napier 
-tying his proof to a continuously decaying function with a negative growth rate instead of a positive one, his 
-calculations were centered around the base $\frac{1}{e}$ like so: For all $x<10^7$, the speed of particle B is a 
-function of ($10^7-x$). Thus, $\frac {\partial x} {\partial t} = f(10^7-x)$ => $x = e^{f(10^7-x)}$ or $Ce^{-kx}$, 
-where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (kx)log_{e}(-e)$ or $-kx*(log_e(\frac{1}
+exponential function! 
+
+The rate of change of distance (velocity) covered for the second particle is a continuously decaying function, with 
+constant decay rate. If we study both particles for the same time durations of $\triangle{t}$, the first particle 
+covers a distance that is linearly proportional to $\triangle{t}$. Thus over a series of $\triangle{t}s$, the 
+distance covered by the first particle is an arithmetic progression in $\triangle{t}$. In the same $\triangle{t}$, 
+the second particle covers a distance that is negatively proportional to itself($10^7-x$). Over the same series of 
+$\triangle{t}s$, the second particle observes a continuously decaying growth in distance covered (I spy a geometric 
+series, gasp!). In this manner, as one function (distance of Particle A) increases linearly at a constant rate, the 
+other (distance of Particle B) increases at a decreasing rate, but proportional to itself. This resembled the 
+properties you would expect from the relation between $log_e(x)$ to $e^{x}$. He in fact proved that if $x=sin\theta$,
+then $y=log_{nap}\theta$. 
+
+The second apple fell harder on my head when I realised why Napier's log tables were to the base $$\frac{1}{e}$$, 
+and not $$e$$. By virtue of Napier tying his proof to a continuously decaying function with a negative growth rate 
+instead of a positive one, his calculations were centered around the base $\frac{1}{e}$ like so: For all $x<10^7$, 
+the speed of particle B is a function of ($10^7-x$). Thus, $\frac {\partial x} {\partial t} = f(10^7-x)$ => $x = e^{f
+(10^7-x)}$ or $Ce^{-kx}$, where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (kx)log_{e}(-e)$ or $-kx*(log_e(\frac{1}
 {e}))$. And lo, there is the $\frac{1}{e}$!
 
 Finally, the answer to the question of 'Why the original version of Napier's log table had e as a pivotal element 
