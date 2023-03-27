@@ -29,22 +29,19 @@ zoomable=true %}
 
 </div>
 
-- one can derive logarithms to any base, so then why choose $$e$$? What made $$e$$ so special, or how did it 
-  simplify calculations? Does the constant have a more tangible interpretation that I can understand?
+- one can derive logarithms to any base, so then why choose the irrational number '$$e$$' of value $2.71828$..? What 
+  made $$e$$, a.k.a. Euler's number, so special and how did it uniquely simplify calculations? Does the constant 
+  have a more tangible interpretation that I can understand?
 - Did $$e$$ derive its special position as the ubiquitous exponential function we use everywhere simply because 
   of the nice properties the log to base e had? That is almost a cyclic argument, since the log was defined to be 
   the inverse of the exponential function. There obviously was more, but...
-- My investigation began with how the mathematician (cum physicist cum astronomer) John Napier, discovered the  
-  logarithm and introduced the world to 'logarithmic tables' in $1614$. This was a numerical invention by Napier who 
-  was trying to simplify large, laborious calculations with big numbers that were commonplace in astronomy. I was 
-  amazed to learn that Napier had never explicitly arrived at or even recognised the presence of a foundational constant ($e$) underpinning his work. His 
-  logarithmic lookup tables **predated** the discovery of $$e$$ and the tools of [modern calculus](https://en.wikipedia.
-  org/wiki/Calculus). Yet, miraculously, the base used in his version 
-  of logarithms turned out to be a scaled version of $$e$$: to be specific they involved the base $$\frac{1}{e}$$ and 
-  the value $10^7$! The fact that $$e$$, or some scaled version of it was the foundation of this entire table of 
-  hundreds of painstakingly computed numerical values, without any explicit knowledge or recognition of $$e$$ **had** 
-  to be more than just coincidence. (Note, unlike Napier's version above, modern day logarithms are calculated with 
-  the base 'e' )
+- My investigation began with how the mathematician (cum physicist cum astronomer) John Napier, discovered the logarithm and introduced the world to 'logarithmic tables' in $1614$. This was a numerical invention by Napier who 
+  was trying to simplify large, laborious calculations with big numbers that were commonplace in astronomy. I was amazed to learn that Napier had never explicitly arrived at or even recognised the presence of a foundational constant ($e$) underpinning his work. His 
+  logarithmic lookup tables **predated** the discovery of $$e$$ and the tools of [modern calculus](https://en.wikipedia.org/wiki/Calculus). Yet, miraculously, the base used in his version 
+  of logarithms turned out to be a scaled version of $$e$$: to be specific they involved the base $$\frac{1}{e}$$ 
+  and the value $10^7$! The fact that $$e$$, or some scaled version of it was the foundation of this entire table of 
+  hundreds of painstakingly computed numerical values, without any explicit knowledge or recognition of $$e$$ **had** to be more than just coincidence. (Note, unlike Napier's version above, modern day logarithms are calculated with 
+  the base 'e')
 - One step further in my investigation, I revisited the contribution of the next popular character in the history of 
   $$e$$ - Bernoulli. Fascinatingly, according to math folklore, he inched closer to discovering this amazing number 
   not through the lens of natural sciences or pure math, but from examining the financial concept of compound 
@@ -108,7 +105,7 @@ future be known as $$e$$, this limit was not solved until Euler nearly 50 years 
 Leonard Euler rewrote the above infinite series $\lim_{m->\infty}(1+\frac{1}{m})^{m}$ to $\lim_{n->\infty}{1+1/n!}$ 
 (Try this for yourself using the binomial theorem if you fancy). He then proved that infinite series was 
 convergent and thus by definition the value of the sum of a convergent infinite series is irrational. Euler 
-christened this irrational number as $$e$$, and the notation stuck.
+christened this irrational number as $$e$$, and the notation has stuck. 
 
 Let that sink in. Without the pivotal proof of the irrationality of $$e$$, we would not have a definite way to express 
 this naturally occurring constant that does not fit into our pre-defined conceptual number system of 
@@ -158,7 +155,7 @@ earlier, but I *always* knew $\frac{\partial (e^x)}{\partial x}=e^x$  to be a fa
 {\partial x}$ was ... oh wait, it was $a^{x}* log_{e(a)}$ and not $a^x$! <d-footnote> This can be proven using 
 differentiation by first principles, and relying on a substitution of $\lim_{n->\infty}(1+\frac{1}{n})^{n}=e$ 
 </d-footnote> I was so used to handling the ubiquitous $$e^x$$ whenever a need for any exponential function was 
-required, that at times (embarassingly, so) $$e$$ and $a$ felt synonymous. 
+required, that at times (embarrassingly, so) $$e$$ and $a$ felt synonymous. 
 
 The fact that differentiating any other member of the family of general exponential functions other than when 
 $a=e$ would result in its derivative being scaled by a factor of $log_ea$ seemed to hold the key to why $e$ was 
@@ -263,7 +260,8 @@ The second apple fell harder on my head when I realised why Napier's log tables 
 and not $$e$$. By virtue of Napier tying his proof to a continuously decaying function with a negative growth rate 
 instead of a positive one, his calculations were centered around the base $\frac{1}{e}$ like so: For all $x<10^7$, 
 the speed of particle B is a function of ($10^7-x$). Thus, $\frac {\partial x} {\partial t} = f(10^7-x)$ => $x = e^{f
-(10^7-x)}$ or $Ce^{-kx}$, where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (kx)log_{e}(-e)$ or $-kx*(log_e(\frac{1}
+(10^7-x)}$ or $Ce^{-kx}$, where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (-kx)log_{e}(e)$ or 
+$kx*(log_e(\frac{1}
 {e}))$. And lo, there is the $\frac{1}{e}$!
 
 Finally, the answer to the question of 'Why the original version of Napier's log table had e as a pivotal element 
