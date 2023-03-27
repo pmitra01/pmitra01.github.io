@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://pmitra01.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://pmitra01.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-03-26T21:15:10+00:00</updated><id>https://pmitra01.github.io/feed.xml</id><title type="html">blank</title><entry><title type="html">What is so *natural* about the natural logarithm?</title><link href="https://pmitra01.github.io/blog/2023/euler-number-recarved/" rel="alternate" type="text/html" title="What is so *natural* about the natural logarithm?" /><published>2023-03-25T22:46:17+00:00</published><updated>2023-03-25T22:46:17+00:00</updated><id>https://pmitra01.github.io/blog/2023/euler-number-recarved</id><content type="html" xml:base="https://pmitra01.github.io/blog/2023/euler-number-recarved/"><![CDATA[<!--[comment] : https://github.com/rstudio/distill/issues/153 to add a banner image-->
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://pmitra01.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://pmitra01.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-03-27T20:31:38+00:00</updated><id>https://pmitra01.github.io/feed.xml</id><title type="html">blank</title><entry><title type="html">What is so *natural* about the natural logarithm?</title><link href="https://pmitra01.github.io/blog/2023/euler-number-recarved/" rel="alternate" type="text/html" title="What is so *natural* about the natural logarithm?" /><published>2023-03-25T22:46:17+00:00</published><updated>2023-03-25T22:46:17+00:00</updated><id>https://pmitra01.github.io/blog/2023/euler-number-recarved</id><content type="html" xml:base="https://pmitra01.github.io/blog/2023/euler-number-recarved/"><![CDATA[<!--[comment] : https://github.com/rstudio/distill/issues/153 to add a banner image-->
 
 <p>I finally decided to dive deeper to dig out the germ of a question/source of confusion that I lazily 
 acknowledged for almost a decade.</p>
@@ -51,8 +51,9 @@ acknowledged for almost a decade.</p>
 </div>
 
 <ul>
-  <li>one can derive logarithms to any base, so then why choose \(e\)? What made \(e\) so special, or how did it 
-simplify calculations? Does the constant have a more tangible interpretation that I can understand?</li>
+  <li>one can derive logarithms to any base, so then why choose the irrational number ‘\(e\)’ of value $2.71828$..? What 
+made \(e\), also called Euler’s number, so special, and how did it uniquely simplify calculations? Does the constant 
+have a more tangible interpretation that I can understand?</li>
   <li>Did \(e\) derive its special position as the ubiquitous exponential function we use everywhere simply because 
 of the nice properties the log to base e had? That is almost a cyclic argument, since the log was defined to be 
 the inverse of the exponential function. There obviously was more, but…</li>
@@ -129,7 +130,7 @@ future be known as \(e\), this limit was not solved until Euler nearly 50 years 
 <p>Leonard Euler rewrote the above infinite series $\lim_{m-&gt;\infty}(1+\frac{1}{m})^{m}$ to $\lim_{n-&gt;\infty}{1+1/n!}$ 
 (Try this for yourself using the binomial theorem if you fancy). He then proved that infinite series was 
 convergent and thus by definition the value of the sum of a convergent infinite series is irrational. Euler 
-christened this irrational number as \(e\), and the notation stuck.</p>
+christened this irrational number as \(e\), and the notation has stuck.</p>
 
 <p>Let that sink in. Without the pivotal proof of the irrationality of \(e\), we would not have a definite way to express 
 this naturally occurring constant that does not fit into our pre-defined conceptual number system of 
@@ -178,7 +179,7 @@ earlier, but I <em>always</em> knew $\frac{\partial (e^x)}{\partial x}=e^x$  to 
 {\partial x}$ was … oh wait, it was $a^{x}* log_{e(a)}$ and not $a^x$! <d-footnote> This can be proven using 
 differentiation by first principles, and relying on a substitution of $\lim_{n-&gt;\infty}(1+\frac{1}{n})^{n}=e$
 </d-footnote> I was so used to handling the ubiquitous \(e^x\) whenever a need for any exponential function was 
-required, that at times (embarassingly, so) \(e\) and $a$ felt synonymous.</p>
+required, that at times (embarrassingly, so) \(e\) and $a$ felt synonymous.</p>
 
 <p>The fact that differentiating any other member of the family of general exponential functions other than when 
 $a=e$ would result in its derivative being scaled by a factor of $log_ea$ seemed to hold the key to why $e$ was 
@@ -326,7 +327,7 @@ then $y=log_{nap}\theta$.</p>
 and not \(e\). By virtue of Napier tying his proof to a continuously decaying function with a negative growth rate 
 instead of a positive one, his calculations were centered around the base $\frac{1}{e}$ like so: For all $x&lt;10^7$, 
 the speed of particle B is a function of ($10^7-x$). Thus, $\frac {\partial x} {\partial t} = f(10^7-x)$ =&gt; $x = e^{f
-(10^7-x)}$ or $Ce^{-kx}$, where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (kx)log_{e}(-e)$ or $-kx*(log_e(\frac{1}
+(10^7-x)}$ or $Ce^{-kx}$, where $C=e^{g(10^7)}$). Now, $y = (log_e(e^{-kx}) + log_eC) \propto (kx)log_{e}(-e)$ or $kx*(log_e(\frac{1}
 {e}))$. And lo, there is the $\frac{1}{e}$!</p>
 
 <p>Finally, the answer to the question of ‘Why the original version of Napier’s log table had e as a pivotal element 
