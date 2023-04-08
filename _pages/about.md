@@ -31,4 +31,8 @@ editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_
 
 
 
-Contact: [LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)
+**EYEBALL GRAB!** 
+I am also starting with a 30 day writing challenge to stir/clean the thought pot, and build that 
+writing muscle. You can follow the series on [Twitter](https://twitter.com/pmitra01) or [TypeShare](https://typeshare.co/payalmitra)
+
+Contact: [LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)  |  [Twitter](https://twitter.com/pmitra01)
