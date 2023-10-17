@@ -383,12 +383,11 @@ well by the quote "Transfer learning makes FMs possible, but it is the scale tha
 INSERT reference" </d-footnote>).</p>
 <ul>
   <li>
-<code class="language-plaintext highlighter-rouge">Talk to and teach the model in its native tongue</code>: Prompting a model for completion in a certain task direction 
-during inference is like interrogating and communicating with the model in the native tongue it was taught in. By 
-the same intuition, continuing to teach (fine-tune) the model to perform desired tasks would be more effective with a learning objective similar to what its pretraining objective 
-was (e.g. next token prediction, denoising). This would mean reformulating our task data to prompt-completion pairs 
-instead of traditional supervised datasets (input, label) we are used to. This may be common knowledge now, but I still have 
-deep appreciation for this point because it undid how I viewed a lot of ML tasks in NLP
+<code class="language-plaintext highlighter-rouge">Talk to and teach the model in its native tongue</code>: Prompting a model for completion in a certain task 
+during inference is like interrogating the model in the native tongue it was taught in. By 
+the same intuition, it would be more effective to continue fine-tune the model with a learning objective 
+similar to what its pretraining objective (e.g. next token prediction, denoising) on datasets refomatted as 
+pompt-completion pairs. This may be common knowledge now, but I still have a deep appreciation for this point.
     <ul>
       <li>I would <strong>strongly</strong> recommend this excellent review paper on the different LM architectures, training 
       objectives and their relationship with prompts to conduct various NLP tasks: [pretrain, prompt, predict]
@@ -540,13 +539,12 @@ approaches to adapt the LLM to your task.</p>
 
 <p>There is no be a ‘golden goldilocks prompt’ that dramatically improves performance on your given task.
 In [6] the authors insightfully experiment with the effect of prompt variability on the LLM task performance. They find that the gains of any one prompt usually disappear over multiple 
-runs, and conclude that prompt size and format is not a dominant hyperparameter for the LLM.  &lt;/d-footnote&gt; Note, 
+runs, and conclude that prompt size and format is not a dominant hyperparameter for the LLM. <d-footnote> Note, 
 the tasks studied in the paper are simpler, short form NLP tasks. Long form abstractive reasoning tasks have been shown to benefit 
 from more sophisticated prompts. A useful summary of the more advanced prompting techniques and where to use them 
 can be found in [10]. As mentioned earlier, there are also PEFT methods that experiment with soft tunable prompts. 
-A recent paper <a href="https://arxiv.org/abs/2309.03409" rel="external nofollow noopener" target="_blank"><code class="language-plaintext highlighter-rouge">LLMs as Optimisers</code></a>[11] uses meta-prompts to prompt the LLM to 
-build its own task optimising prompt
-&lt;/d-footnote&gt;</p>
+A recent paper [`LLMs as Optimisers`](https://arxiv.org/abs/2309.03409)[11] uses meta-prompts to prompt the LLM to 
+build its own task optimising prompt </d-footnote></p>
 
 <h4 id="takeaways">Takeaways:</h4>
 <ul>
@@ -561,7 +559,11 @@ incredibly universal and can be applied to both instruction-tuning and RLHF.</li
 one most cares about is a critical aid to  deciding between approaches for LLM application.</li>
 </ul>
 
-<h3 id="references">References:</h3>
+<h3 id="acknowledgements">Acknowledgements</h3>
+<p>I am very grateful to Corey Harper’s painstaking editorial review of the post, as well as Raahul Dutta for 
+his helpful feedback.</p>
+
+<h3 id="references">References</h3>
 
 <p>[1] <a href="https://huyenchip.com/2023/04/11/llm-engineering.html" rel="external nofollow noopener" target="_blank">Building LLM applications for production</a> by Chip Huyen</p>
 
