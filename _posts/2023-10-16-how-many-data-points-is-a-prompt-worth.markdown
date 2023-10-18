@@ -7,6 +7,7 @@ date:   2023-10-16 23:46:17 +0100
 ---
 ## TL;DR
 This is a simple post that journals two things. 
+
 First, the long urge I have had to conduct a basic experiment to see for myself 'how many (training) data points a 
 (training) prompt was worth'. Given a task we wish to train an LLM for, can we yield comparable or even better 
 models with a mere fraction of the labeled data points than before, by simply transforming the training examples 
@@ -20,26 +21,25 @@ tasks can be creatively reformulated as generative tasks (3) when to consider fi
 
 Note: I'm not making a case for 'LLM-maximalism' where the perfect prompt and best-on-market LLM combo magically 
 solves compound NLP tasks. On the contrary to build reliable and feasible production-grade systems with the 
-relatively untamed LLMs, I identify with: (i) [LLM-Pragmatism](https://explosion.ai/blog/against-llm-maximalism) and 
-[Evaluation-Driven-Development](https://eugeneyan.com/writing/llm-patterns/?utm_source=convertkit&utm_medium=email&utm_campaign=How+to+Match+LLM+Patterns+to+Problems%20-%2011495339#evals-to-measure-performance) [2] 
+relatively untamed LLMs, I identify with: (i) [LLM-Pragmatism](https://explosion.ai/blog/against-llm-maximalism) [1] 
+and [Evaluation-Driven-Development](https://eugeneyan.com/writing/llm-patterns/?utm_source=convertkit&utm_medium=email&utm_campaign=How+to+Match+LLM+Patterns+to+Problems%20-%2011495339#evals-to-measure-performance) [2] 
 (EDD?). Depending on your use-case LLM Pragmatism could call for some combination of task-composibility and 
 control-flows that coordinate different components and tools. <d-footnote>Instead of aggregating all steps to be 
 performed by the product feature into one big LLM prompt, decompose it into subtasks and delegate different 
 components to heuristic or more explainable ML solutions where best suited, and LLM-generation only for certain 
 aspects such as summarisation or intent interpretation, which are highly abstractive in nature. The decision flow of 
-control between different components can be determined with agents or rules. Examples include RAG (Retrieval 
-Augmented Generation) in search, or agent-based LLM workflows. Several other examples can also be found in [Building 
-LLM applications for production](https://huyenchip.com/2023/04/11/llm-engineering.html) [1] and 
-[Patterns for Building LLM-Based systems and products](https://eugeneyan.com/writing/llm-patterns/) [2].
-</d-footnote>. (ii) It is important to understand when and how to fine-tune a suitable (possibly 'small') model for 
-one's use case.
+control between different components can be determined with agents or rules as seen in immplementation patterns such as 
+RAG (Retrieval Augmented Generation) in search, or agent-based LLM workflows. Several other examples can also be 
+found in blog posts `Building LLM applications for production` by Chip Huyen [3] and `Patterns for Building 
+LLM-Based systems and products` by Eugene Yan [1].</d-footnote>. (ii) It is important to understand when and how to 
+fine-tune a suitable (possibly 'small') model for one's use case.
 
 
 ## Diving in
 The genesis of this blog post was in early November 2022 after attending an [AKBC](https://www.akbc.ws/2022/) 
-workshop. During two of the keynote talks <d-footnote>[Keynote talks](https://wise-supervision.github.io/#Speakers)
-by Prof. Heng Ji introducing [Code4Struct](https://arxiv.org/abs/2210.12810); and Prof. Eneko Agirre on ['Pretrain, 
-Prompt, Entail'](https://dl.acm.org/doi/abs/10.1145/3477495.3532786) paradigm for information extraction.
+workshop. During two of the keynote talks [4] <d-footnote>Keynote talks [4] by Prof. Heng Ji introducing 
+[Code4Struct](https://arxiv.org/abs/2210.12810) [5]; and Prof. Eneko Agirre on ['Pretrain, 
+Prompt, Entail'](https://dl.acm.org/doi/abs/10.1145/3477495.3532786)[6] paradigm for information extraction.
 </d-footnote>, it first dawned upon me how simple, versatile and effective the tactic of prompting was not just for 
 in-context learning at inference time, but also to further fine-tune LLMs on desired tasks. Prompts allowed the 
 framing of tasks in a way that was closer to the pretraining objective (next token/sentence prediction) of a class 
@@ -60,7 +60,7 @@ The structure of the post is as follows:
 <h3 id="1-experiment">Experiment</h3>
 To quantitatively observe the sample efficiency of fine-tuning LLMs using prompt-completion pairs instead of 
 conventional supervised  classification on input-output labelled data points, I performed the following experiment 
-inspired by the paper '[How many data points is a prompt worth]((https://arxiv.org/abs/2103.08493))' [6]. The 
+inspired by the paper '[How many data points is a prompt worth]((https://arxiv.org/abs/2103.08493))' [7]. The 
 authors perform a number of experiments on 6 different benchmark NLP tasks and find that prompt-based instruction 
 tuned LLMs outperform the classifier-head based model, while needing 100x-1000x fewer prompt data points. In my 
 version of the experiment, I kept things lightweight with a rudimentary causal LM GPT2, and a simple discriminative task.
@@ -134,22 +134,22 @@ helps the pretrained model learn quicker and with lesser data -> more effective 
 points, in comparison to the mere 30% achieved by classifier-based model at the same 10,000 data point mark. If we 
   linearly interpolate the training curves for model performance on training dataset size, then the classifier based 
   model would have required 50,000 data points to achieve an accuracy of 60%.
-- In conclusion: Similar to the results in the underlying paper [4], we find that in our primitive experiment, 
+- In conclusion: Similar to the results in the underlying paper [7], we find that in our primitive experiment, 
   prompt-based instruction tuning of models was ~5x times more sample efficient than conventional classifier-head 
-  based models. In [4] the authors conduct more rigorous experiments where models are trained with better 
+  based models. In [7] the authors conduct more rigorous experiments where models are trained with better 
   hyperparameters and to convergence, across multiple runs. They infer that 'a prompt was equivalent to 100s of data 
   points' when evaluated on SUPERGLUE benchmark tasks.
 
  
-__Limitations of experiment__ (largely due to decisions of saving on training and infrastructure costs)
+_Experiment Limitations_ (largely due to decisions of saving on training and infrastructure costs)
 
-|                                      Limitation                                       |                                                                                                                                                                                                                                                    Elaboration                                                                                                                                                                                                                                                     |
-|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|                               Under-training of models                                |                                                                                                                                                                        I train each model (regardless of training dataset size) for only 5 epochs. This is well below convergence. Related works often train models for > 50 epochs.[CITE]                                                                                                                                                                         |
-|             Use of more primitive model GPT-2 and not powerful Causal LLM             |                                                                                                                                        The comparative gains of the prompt-based learning (instruction tuning) method is expected to be more stark when using a powerful FM like GPT-3, or the LLama models [CITE], and could have led to more decisive experiment results                                                                                                                                         |
-|                       Choice of rudimentary classification task                       |                                                                                                                                       I chose the simplest task of sentence classification. It is not clear how my results extrapolate to more advanced tasks of say abstractive NLP. However, the simple classification setup was sufficient for purpose of my experiment.                                                                                                                                        |
-|                   Did not use a fewshot-prompting setup as baseline                   |                                                                                                                                                                                           I do not provide any comparison to the performance reachable by pure prompting and in-context learning (no training scenario).                                                                                                                                                                                           |
-| Evaluation of generative models is hard, and I did not build a rigourous-enough evals |    Mapping the output of <br/>generative models to discriminative labels has been notorious in the community for lack of rigour. For instance, huggingface reports evaluation hurdles and holes while carrying out LLM evaluation on the benchmark task of MCQ-MMLU [7]. I used a verbaliser to map the output of the first 5 generated tokens from the fine-tuned LLM to map to one of the 4 class labels using a scoring function such as bert-score and rouge. These are not without limitations, see [here](https://eugeneyan.com/writing/llm-patterns/?utm_source=convertkit&utm_medium=email&utm_campaign=How+to+Match+LLM+Patterns+to+Problems%20-%2011495339#more-about-evals).     |   
+|                                      Limitation                                       |                                                                                                                                                                                                                                                                                                                                   Elaboration                                                                                                                                                                                                                                                                                                                                   |
+|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|                               Under-training of models                                |                                                                                                                                                                                                                                                        I train each model (regardless of training dataset size) for only 5 epochs. This is well below convergence. Related works often train models for > 50 epochs.[7,]                                                                                                                                                                                                                                                        |
+|             Use of more primitive model GPT-2 and not powerful Causal LLM             |                                                                                                                                                                                                                      The comparative gains of the prompt-based learning (instruction tuning) method is expected to be more stark when using a powerful FM like GPT-3, or the LLama models [16][17], and could have led to more decisive experiment results                                                                                                                                                                                                                      |
+|                       Choice of rudimentary classification task                       |                                                                                                                                                                                                                      I chose the simplest task of sentence classification. It is not clear how my results extrapolate to more advanced tasks of say abstractive NLP. However, the simple classification setup was sufficient for purpose of my experiment.                                                                                                                                                                                                                      |
+|                   Did not use a fewshot-prompting setup as baseline                   |                                                                                                                                                                                                                                                                         I do not provide any comparison to the performance reachable by pure prompting and in-context learning (no training scenario).                                                                                                                                                                                                                                                                          |
+| Evaluation of generative models is hard, and I did not build a rigourous-enough evals | Mapping the output of generative models to discriminative labels has been notorious in the community for lack of rigour. For instance, huggingface reports evaluation hurdles and holes while carrying out LLM evaluation on the benchmark task of MCQ-MMLU [7]. I used a verbaliser to map the output of the first 5 generated tokens from the fine-tuned LLM to map to one of the 4 class labels using a scoring function such as bert-score and rouge. These are not without limitations, see [here](https://eugeneyan.com/writing/llm-patterns/?utm_source=convertkit&utm_medium=email&utm_campaign=How+to+Match+LLM+Patterns+to+Problems%20-%2011495339#more-about-evals). |   
 
 
 <h3 id="2-reflections"> Main reflections </h3>
@@ -163,8 +163,7 @@ INSERT reference" </d-footnote>).
 similar to what its pretraining objective (e.g. next token prediction, denoising) on datasets refomatted as 
 pompt-completion pairs. This may be common knowledge now, but I still have a deep appreciation for this point.
   * I would **strongly** recommend this excellent review paper on the different LM architectures, training 
-          objectives and their relationship with prompts to conduct various NLP tasks: [pretrain, prompt, predict]
-    (https://arxiv.org/abs/2107.13586)[4].
+objectives and their relationship with prompts to conduct various NLP tasks: [Pretrain, Prompt, Predict](https://arxiv.org/abs/2107.13586) [8].
  
 * `All tasks can be viewed as generation`: Almost all non-generative NLP tasks that were traditionally thought of as 
   discriminative (e.g.Topic Classification, structured extraction (NER, EL, extractive QA), etc) could be posed as a 
@@ -188,14 +187,15 @@ pompt-completion pairs. This may be common knowledge now, but I still have a dee
 </div> 
 
   - The 3-stages of the fine-tuning recipe indicated above:
-	- **Pretrained FM Selection**: Take a foundational LLM which was pretrained at scale on 
+	- **Stage 1 -Pretrained FM Selection**: Take a foundational LLM which was pretrained at scale on 
       subject domains and data formats that are relevant to your task. In case no suitable FM is available in 
       domain of interest, one might also consider pretraining an LLM from scratch (e.g. BloomBergGPT)
-    - **Supervised Fine-tuning/Instruction Tuning**: Adapt all or some of FM weights by supervised fine-tuning on
+    - **Stage 2 - Supervised Fine-tuning/Instruction Tuning**: Adapt all or some of FM weights by supervised 
+      fine-tuning on
 	  task-appropriate data points formatted as prompt-response pairs. In case of multi-task fine-tuning each task 
       dataset may be formatted with its own distinct instruction sets or prefix(e.g. FLAN-lineage of 
       models, T5). Parameter-Efficient Fine-Tuning (PEFT) methods may be used to update only part of the LLM weights 
-      [5].
+      [9].
 		- In a broad strokes, ChatGPT is the output of instruction fine-tuning GPT-3.5+ over training examples that	
 		  were in format of completing conversational dialog pairs (ChatGPT also involves another layer of 
 		  fine-tuning where the model output is aligned to human preferences using RLHF)
@@ -206,11 +206,11 @@ pompt-completion pairs. This may be common knowledge now, but I still have a dee
 		  process to T5 at scale.
         - Github CoPilot and OpenAI Codex utilise GPT-3 models that were continued to be trained on code 
 		  repositories and then fine-tuned on language-to-code mapped datasets.
-    - **(Optional) Reinforcement Learning from Human Feedback (RLHF)** Align models to human preferences 
+    - **(Optional) Stage 3 - Reinforcement Learning from Human Feedback (RLHF)** Align models to human preferences 
       using RLHF. Ths involves another round of fine-tuning the models from step 2 with human feedback on preferred 
       responses amongst multiple valid generated outputs. Such alignment is usually performed to tune the model 
       to learn more abstract human notions such as safety, honesty, harmlessness, etc. A helpful overview is presented 
-      in [Chip Huyen's RLHF blogpost](https://huyenchip.com/2023/05/02/rlhf.html)[5].
+      in [Chip Huyen's RLHF blogpost](https://huyenchip.com/2023/05/02/rlhf.html)[10].
 * Want to further fine-tune an LLM to your own downstream use-case with instruction-tuning, other PEFT approaches, 
   or even RLHF? Well, you guessed correctly: prompt-response pairs are the labeled input-output data pairs you need to 
   for your training routine again.
@@ -229,8 +229,8 @@ any training) is sufficient vs fine-tuning all or part of an LLM's weights on a 
 There are a number of deciding factors in this situation are 
 1. Size of the foundation LLM: Literature demonstrates that the number of model parameters is correlated with 
    improvements in prompting performance. In Figure 3 excerpted from one of the initial works in prompt tuning 
-   [Lester et al 2021][8], the authors show that while the advantages of fine-tuning over prompting are large for small 
-   model sizes (<10B), this advantage is lost as model size approaches 10B. With these massive models prompting is 
+    by Lester et al [11], the authors show that while the advantages of fine-tuning over prompting are large for 
+   small model sizes (<10B), this advantage is lost as model size approaches 10B. With these massive models prompting is 
    sufficient for the LLM to understand the instructions and complete the task as per expectations, and engineering 
    performance becomes comparable to that of fine-tuning and prompt-tuning.
 2. Does your task require specialised knowledge and complex reasoning? the more specific the knowledge required to 
@@ -262,12 +262,13 @@ you in-context learning using prompting might be reasonable in your use case. If
 approaches to adapt the LLM to your task.
 
 There is no be a 'golden goldilocks prompt' that dramatically improves performance on your given task.
-In [6] the authors insightfully experiment with the effect of prompt variability on the LLM task performance. They find that the gains of any one prompt usually disappear over multiple 
-runs, and conclude that prompt size and format is not a dominant hyperparameter for the LLM. <d-footnote> Note, 
+In [7] the authors insightfully experiment with the effect of prompt variability on the LLM task performance. They 
+find that the gains of any one prompt usually disappear over multiple runs, and conclude that prompt size and format 
+is not a dominant hyperparameter for the LLM. <d-footnote> Note, 
 the tasks studied in the paper are simpler, short form NLP tasks. Long form abstractive reasoning tasks have been shown to benefit 
 from more sophisticated prompts. A useful summary of the more advanced prompting techniques and where to use them 
-can be found in [10]. As mentioned earlier, there are also PEFT methods that experiment with soft tunable prompts. 
-A recent paper [`LLMs as Optimisers`](https://arxiv.org/abs/2309.03409)[11] uses meta-prompts to prompt the LLM to 
+can be found in [12]. As mentioned earlier, there are also PEFT methods that experiment with soft tunable prompts. 
+A recent paper [`LLMs as Optimisers`](https://arxiv.org/abs/2309.03409)[13] uses meta-prompts to prompt the LLM to 
 build its own task optimising prompt </d-footnote>
 
 
@@ -283,35 +284,48 @@ build its own task optimising prompt </d-footnote>
   one most cares about is a critical aid to  deciding between approaches for LLM application.
 
 ### Acknowledgements
-I am very grateful to Corey Harper's painstaking editorial review of the post, as well as Raahul Dutta for 
-his helpful feedback. 
+I am very grateful to Corey Harper's for going above and beyond with his editorial review of the post, as well as 
+Raahul Dutta for his helpful feedback. 
  
 ### References
-
-[1] [Building LLM applications for production](https://huyenchip.com/2023/04/11/llm-engineering.html) by Chip Huyen
+[1] [Against LLM maximalism](https://explosion.ai/blog/against-llm-maximalism) by Mathhew Honnibal
 
 [2] [Patterns for Building LL-Based systems and products](https://eugeneyan.com/writing/llm-patterns/) by Eugene Yan
 
-[3] [AKBC 2022 Keynote Talks](https://wise-supervision.github.io/#Speakers) 
+[3] [Building LLM applications for production](https://huyenchip.com/2023/04/11/llm-engineering.html) by Chip Huyen
 
-[4] Liu, Pengfei, et al. "Pre-train, prompt, and predict: A systematic survey of prompting methods in natural 
-language processing." ACM Computing Surveys 55.9 (2023): 1-35. [[ACM]](https://dl.acm.org/doi/full/10.1145/3560815)
+[4] [AKBC 2022 Keynote Talks](https://wise-supervision.github.io/#Speakers) 
 
-[5] [RLHF by Chip Huyen](https://huyenchip.com/2023/05/02/rlhf.html)
+[5] Code4Struct[[arXiv]](https://arxiv.org/abs/2210.12810) 
 
-[6] Scao, Teven Le, and Alexander M. Rush. "How many data points is a prompt worth?." arXiv preprint arXiv:2103.08493 
+[6] Agirre, Eneko. "Few-shot Information Extraction is Here: Pre-train, Prompt and Entail." Proceedings of the 45th 
+International ACM SIGIR Conference on Research and Development in Information Retrieval. 2022.[[ACM]](https://dl.acm.org/doi/abs/10.1145/3477495.3532786)
+
+[7] Scao, Teven Le, and Alexander M. Rush. "How many data points is a prompt worth?." arXiv preprint arXiv:2103.08493 
 (2021). [[arXiv]](https://arxiv.org/abs/2103.08493)
 
-[7] [What's going on with the Open LLM Leaderboard?](https://huggingface.co/blog/evaluating-mmlu-leaderboard)
+[8] Liu, Pengfei, et al. "Pre-train, prompt, and predict: A systematic survey of prompting methods in natural 
+language processing." ACM Computing Surveys 55.9 (2023): 1-35. [[ACM]](https://dl.acm.org/doi/full/10.1145/3560815)
 
-[8] Lester, Brian, Rami Al-Rfou, and Noah Constant. "The power of scale for parameter-efficient prompt tuning." arXiv 
+[9] Lialin, Vladislav, Vijeta Deshpande, and Anna Rumshisky. "Scaling down to scale up: A guide to 
+parameter-efficient fine-tuning." arXiv preprint arXiv:2303.15647 (2023).
+
+[10] [RLHF](https://huyenchip.com/2023/05/02/rlhf.html) by Chip Huyen
+
+[11] Lester, Brian, Rami Al-Rfou, and Noah Constant. "The power of scale for parameter-efficient prompt tuning." arXiv 
    preprint arXiv:2104.08691 (2021). [[arXiv]](https://arxiv.org/abs/2104.08691)
 
-[9] GPT understands, too: Liu, X., et al. "GPT understands, too. arXiv." arXiv preprint arXiv:2103.10385 (2021).
-
-[10] [Advanced Prompt-engineering](https://towardsdatascience.com/advanced-prompt-engineering-f07f9e55fe01) by 
+[12] [Advanced Prompt-engineering](https://towardsdatascience.com/advanced-prompt-engineering-f07f9e55fe01) by 
 Cameron R. Wolfe
 
-[11] `Large Langugage Models as Optimisers: [[arXiv]](https://arxiv.org/abs/2309.03409)
-[12] Huggingface tutorial and implementation of Parameter Efficient Fine-Tuning methods: https://huggingface.
+[13] `Large Langugage Models as Optimisers: [[arXiv]](https://arxiv.org/abs/2309.03409)
+
+[14] Huggingface tutorial and implementation of Parameter Efficient Fine-Tuning methods: https://huggingface.
 co/blog/peft
+
+[15] Huggingface blog [`What's going on with the Open LLM Leaderboard?`](https://huggingface.co/blog/evaluating-mmlu-leaderboard)
+
+[16] GPT understands, too: Liu, X., et al. "GPT understands, too. arXiv." arXiv preprint arXiv:2103.10385 (2021).
+
+[17] Touvron, Hugo, et al. "Llama 2: Open foundation and fine-tuned chat models." arXiv preprint arXiv:2307.09288 (2023).
+
