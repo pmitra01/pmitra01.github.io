@@ -155,10 +155,10 @@ _Experiment Limitations_ (largely due to decisions of saving on training and inf
 
 
 <h3 id="2-reflections"> Main reflections </h3>
-Here I focus on elementary realisations that grounded my understanding of what made prompting powerful
-(besides the fact that today's FMs are trained on massive data amounts <d-footnote> This is summed up 
-well by the quote "Transfer learning makes FMs possible, but it is the scale that makes them powerful 
-INSERT reference" </d-footnote>).
+Some elementary realisations that grounded my understanding of what made prompting powerful
+(besides the fact that today's LLMs are trained on massive amounts of data [23] <d-footnote> This is summed up 
+well in [23] as "Transfer learning makes FMs possible, but it is the scale that makes them powerful"
+</d-footnote>).
 * `Talk to and teach the model in its native tongue`: Prompting a model for completion in a certain task 
   during inference is like interrogating the model in the native tongue it was taught in. Thus it would be more 
 effective to continue to fine-tune the model with a learning objective 
@@ -178,8 +178,8 @@ objectives and their relationship with prompts to conduct various NLP tasks: [Pr
 	   all tasks as generation (sequence to sequence generation)
 	
 * `The same fine-tuning recipe behind most of the recent successful LLM apps` The recent surge of 
-  successful prompt-based technologies built atop general purpose FMs, whether chat-agents, coding assistants, or 
-  natural-language search tools, all inherit from the same 3-stage fine-tuning recipe as seen in Figure 2.
+  successful prompt-based technologies built atop general purpose [Foundation Models (FMs)](https://hai.stanford.edu/news/what-foundation-model-explainer-non-experts), whether chat-agents, coding 
+  assistants, or natural-language search tools, all inherit from the same 3-stage fine-tuning recipe as seen in Figure 2.
 
 <div class="row mt-3"  style="width:800px; height:500px align:right">
     <div class="col-sm mt-3 mt-md-0" >
@@ -257,13 +257,6 @@ There are a number of deciding factors in this situation:
    model performance on the task. On the flipside, is it feasible to access and maintain the infrastructure required 
    for self-hosting and fine-tuning an LLM?
 
-__Evaluation is your true north star:__ 
-In my experience, the single most effective pattern to guide development of LLM-centric applications is evaluation.
-Evaluate predictions from an LLM of your choice (e.g. ChatGPT, Llama, etc) on metrics that are relevant to your 
-task. Are you able to reliably (reproducibly and consistently) get the performance you require from prompt 
-engineering alone? Does this performance hold as you increase the size of the test set you evaluate on? If yes, then 
-in-context learning using prompting might be reasonable in your use case. If not, then you may consider other
-approaches to adapt the LLM to your task.
 
 There is no 'golden goldilocks prompt' that dramatically improves performance on a given task.
 In [7] the authors insightfully experiment with the effect of prompt variability on the LLM task performance. They 
@@ -275,13 +268,22 @@ earlier, there are also PEFT methods that experiment with soft tunable prompts. 
 (https://arxiv.org/abs/2309.03409)[13] uses meta-prompts to prompt the LLM to build its own task optimising prompt </d-footnote>
 
 
+__Evaluation is your true north star:__ 
+In my experience, the single most effective pattern to guide development of LLM-centric applications is evaluation.
+Evaluate predictions from an LLM of your choice (e.g. ChatGPT, Llama, etc) on metrics that are relevant to your 
+task. Are you able to reliably (reproducibly and consistently) get the performance you require from prompt 
+engineering alone? Does this performance hold as you increase the size of the test set you evaluate on? If yes, then 
+in-context learning using prompting might be reasonable in your use case. If not, then you may consider other
+approaches to adapt the LLM to your task.
+
+
 #### Takeaways:
 - If you want to use a smaller model for specific tasks and domains, the current industry/academia verdict is that 
-  fine-tuning can get you there faster and more reliably than prompt engineering.
+  fine-tuning can get you there faster and more reliably than prompt engineering. 
 - Directly adapting an LLM's output to a task using fine-tuning with prompt-completion pairs (instruction tuning, or 
   even RLHF which incorporates human preferences into the LLM tuning objective) is much more sample efficient than 
   using conventional labeled input-output data pairs.
-- Use PEFT methods to make fine-tuning LLMs more accessible and feasible. Methods such as LoRA (or QLoRA) are 
+- Use PEFT methods to make fine-tuning LLMs more accessible and feasible. Methods such as LoRA [21] (or QLoRA[22]) are 
   incredibly universal and can be applied to both instruction-tuning and RLHF.
 - Build evals as a critical part of your workflow. An evaluation routine that captures the performance criteria that 
   one most cares about is a critical aid to  deciding between approaches for LLM application.
@@ -324,12 +326,12 @@ parameter-efficient fine-tuning." arXiv preprint arXiv:2303.15647 (2023).
 [12] [Advanced Prompt-engineering](https://towardsdatascience.com/advanced-prompt-engineering-f07f9e55fe01) by 
 Cameron R. Wolfe
 
-[13] `Large Langugage Models as Optimisers: [[arXiv]](https://arxiv.org/abs/2309.03409)
+[13] Yang, Chengrun, et al. "Large language models as optimizers." arXiv preprint arXiv:2309.03409 (2023).
 
 [14] Huggingface tutorial and implementation of Parameter Efficient Fine-Tuning methods: https://huggingface.
 co/blog/peft
 
-[15] Huggingface blog [`What's going on with the Open LLM Leaderboard?`](https://huggingface.co/blog/evaluating-mmlu-leaderboard)
+[15] Huggingface blog ["What's going on with the Open LLM Leaderboard?"](https://huggingface.co/blog/evaluating-mmlu-leaderboard)
 
 [16] GPT understands, too: Liu, X., et al. "GPT understands, too. arXiv." arXiv preprint arXiv:2103.10385 (2021).
 
@@ -343,5 +345,8 @@ co/blog/peft
 [20] Devaraj, Ashwin, et al. "Evaluating factuality in text simplification." Proceedings of the conference. 
 Association for Computational Linguistics. Meeting. Vol. 2022. NIH Public Access, 2022.
 
+[21] Hu, Edward J., et al. "Lora: Low-rank adaptation of large language models." arXiv preprint arXiv:2106.09685 (2021).
 
+[22] Dettmers, Tim, et al. "Qlora: Efficient finetuning of quantized llms." arXiv preprint arXiv:2305.14314 (2023).
 
+[23] Bommasani, Rishi, et al. "On the opportunities and risks of foundation models." arXiv preprint arXiv:2108.07258 (2021).
