@@ -305,7 +305,8 @@ Additionally, they perform multiple data sampling runs to build more robust trai
 
 <div class="row mt-3" style="width:600px; height:400px align:right">
     <div class="col-sm mt-3 mt-md-0">
-    <figcaption> Figure 1 </figcaption>
+    <figcaption> Figure 1: Test-set performance of models against number of data points tehy were trained on 
+</figcaption>
         <figure>
 
   <picture>
@@ -378,21 +379,19 @@ points’ when evaluated on SUPERGLUE benchmark tasks.</li>
 </table>
 
 <h3 id="2-reflections"> Main reflections </h3>
-<p>Here I focus on elementary realisations that grounded my understanding of what made prompting so powerful
-(other than the fact that today’s FMs were trained on massive amounts of data) <d-footnote> This is summed up 
+<p>Here I focus on elementary realisations that grounded my understanding of what made prompting powerful
+(besides the fact that today’s FMs are trained on massive data amounts <d-footnote> This is summed up 
 well by the quote "Transfer learning makes FMs possible, but it is the scale that makes them powerful 
 INSERT reference" </d-footnote>).</p>
 <ul>
   <li>
-<code class="language-plaintext highlighter-rouge">Talk to and teach the model in its native tongue</code>: Prompting a model for completion in a certain task 
-during inference is like interrogating the model in the native tongue it was taught in. By 
-the same intuition, it would be more effective to continue fine-tune the model with a learning objective 
-similar to what its pretraining objective (e.g. next token prediction, denoising) on datasets refomatted as 
-pompt-completion pairs. This may be common knowledge now, but I still have a deep appreciation for this point.
-    <ul>
-      <li>I would <strong>strongly</strong> recommend this excellent review paper on the different LM architectures, training 
-objectives and their relationship with prompts to conduct various NLP tasks: <a href="https://arxiv.org/abs/2107.13586" rel="external nofollow noopener" target="_blank">Pretrain, Prompt, Predict</a> [8].</li>
-    </ul>
+    <p><code class="language-plaintext highlighter-rouge">Talk to and teach the model in its native tongue</code>: Prompting a model for completion in a certain task 
+during inference is like interrogating the model in the native tongue it was taught in. Thus it would be more 
+effective to continue to fine-tune the model with a learning objective 
+similar to its pretraining objective (e.g. next token prediction, denoising) on datasets refomatted as 
+pompt-completion pairs. This may be common knowledge now, but I still have deep appreciation for this point. I 
+would <strong>strongly</strong> recommend this excellent review paper on the different LM architectures, training 
+objectives and their relationship with prompts to conduct various NLP tasks: <a href="https://arxiv.org/abs/2107.13586" rel="external nofollow noopener" target="_blank">Pretrain, Prompt, Predict</a> [8].</p>
   </li>
   <li>
 <code class="language-plaintext highlighter-rouge">All tasks can be viewed as generation</code>: Almost all non-generative NLP tasks that were traditionally thought of as 
@@ -400,11 +399,10 @@ discriminative (e.g.Topic Classification, structured extraction (NER, EL, extrac
 generative task using prompt-completion frameworks. Instead of trying to modify the method (hammer)  to work with the task (bolt), transform the task to 
 a nail instead. Some examples:
     <ul>
-      <li>Extract structured events (NER + Relation extraction) from natural language: Authors design few-shot prompts in 
-form of semi-instantiated Python classes for <code class="language-plaintext highlighter-rouge">Event</code>, with desired entities and relations as attributes of 
-the class. They then prompt code-to-text FMs to complete the extraction of remainder 
-attributes from the text</li>
-      <li>Old gem, but I found myself revisiting the T5 paper which reverberates the philosophy of viewing 
+      <li>Extract structured events (NER + Relation extraction) from natural language: In [5], the authors design few-shot 
+prompts in form of semi-instantiated Python classes for <code class="language-plaintext highlighter-rouge">Event</code>, with event entities and relations as 
+attributes of the class. They then prompt code-to-text FMs to complete the extraction of remainder attributes from the text</li>
+      <li>Old gem, but I found myself revisiting the T5 paper [4] which reverberates the philosophy of viewing 
 all tasks as generation (sequence to sequence generation)</li>
     </ul>
   </li>
@@ -416,7 +414,7 @@ natural-language search tools, all inherit from the same 3-stage fine-tuning rec
 
 <div class="row mt-3" style="width:800px; height:500px align:right">
     <div class="col-sm mt-3 mt-md-0">
-    <figcaption> Figure 2 </figcaption>
+    <figcaption> Figure 2: Fine-tuning recipe of FMs </figcaption>
         <figure>
 
   <picture>
@@ -454,26 +452,26 @@ models, T5). Parameter-Efficient Fine-Tuning (PEFT) methods may be used to updat
           <li>In a broad strokes, ChatGPT is the output of instruction fine-tuning GPT-3.5+ over training examples that	
 were in format of completing conversational dialog pairs (ChatGPT also involves another layer of 
 fine-tuning where the model output is aligned to human preferences using RLHF)</li>
-          <li>T5 was the result of taking the good old transformer architecture, pretraining it 
+          <li>The T5 model was the result of taking the good old transformer architecture, pretraining it 
 with a de-noising objective on unstructured text corpus, and then finally fine-tuning it on different 
 tasks datasets that were converted into a format of text-to-text generation tasks with a task specific 
-prefix. More recently, FLAN-T5 was released as a more powerful LLM after applying the instruction-tuning 
-process to T5 at scale.</li>
-          <li>Github CoPilot and OpenAI Codex utilise GPT-3 models that were continued to be trained on code 
-repositories and then fine-tuned on language-to-code mapped datasets.</li>
+prefix [4]. More recently, FLAN-T5 was released as a more powerful LLM after applying the instruction-tuning 
+process to T5 at scale [18].</li>
+          <li>Github CoPilot and OpenAI Codex utilise GPT-3 model variants that continued pretraining on code 
+repositories and which were then fine-tuned on language-to-code mapped datasets.</li>
         </ul>
       </li>
       <li>
 <strong>(Optional) Stage 3 - Reinforcement Learning from Human Feedback (RLHF)</strong> Align models to human preferences 
-using RLHF. Ths involves another round of fine-tuning the models from step 2 with human feedback on preferred 
+using RLHF. Ths involves another round of fine-tuning LLMs from step 2 with human feedback on preferred 
 responses amongst multiple valid generated outputs. Such alignment is usually performed to tune the model 
 to learn more abstract human notions such as safety, honesty, harmlessness, etc. A helpful overview is presented 
 in <a href="https://huyenchip.com/2023/05/02/rlhf.html" rel="external nofollow noopener" target="_blank">Chip Huyen’s RLHF blogpost</a>[10].</li>
     </ul>
   </li>
-  <li>Want to further fine-tune an LLM to your own downstream use-case with instruction-tuning, other PEFT approaches, 
-or even RLHF? Well, you guessed correctly: prompt-response pairs are the labeled input-output data pairs you need to 
-for your training routine again.</li>
+  <li>Want to further fine-tune an already tuned FM to your own downstream use-case with instruction-tuning, other PEFT 
+approaches, or even RLHF? Well, you guessed correctly: prompt-response pairs are the labeled input-output data 
+pairs you need to for your training routine again.</li>
 </ul>
 
 <h3 id="3-takeaway-remarks"> Prompt engineering vs fine-tuning </h3>
@@ -483,7 +481,9 @@ any training) is sufficient vs fine-tuning all or part of an LLM’s weights on 
 
 <div class="row mt-3" style="width:400px; height:300px align:right">
     <div class="col-sm mt-3 mt-md-0">
-    <figcaption> Figure 3 </figcaption>
+    <figcaption> Figure 3: Comparing task performance against model parameter size for various transfer-learning 
+techniques
+</figcaption>
         <figure>
 
   <picture>
@@ -503,7 +503,7 @@ any training) is sufficient vs fine-tuning all or part of an LLM’s weights on 
     </div>
 </div>
 
-<p>There are a number of deciding factors in this situation are</p>
+<p>There are a number of deciding factors in this situation:</p>
 <ol>
   <li>Size of the foundation LLM: Literature demonstrates that the number of model parameters is correlated with 
 improvements in prompting performance. In Figure 3 excerpted from one of the initial works in prompt tuning 
@@ -573,7 +573,10 @@ Raahul Dutta for his helpful feedback.</p>
 
 <p>[3] <a href="https://huyenchip.com/2023/04/11/llm-engineering.html" rel="external nofollow noopener" target="_blank">Building LLM applications for production</a> by Chip Huyen</p>
 
-<p>[4] <a href="https://wise-supervision.github.io/#Speakers" rel="external nofollow noopener" target="_blank">AKBC 2022 Keynote Talks</a></p>
+<p>[4] Raffel, Colin, et al. “Exploring the limits of transfer learning with a unified text-to-text transformer.” The 
+Journal of Machine Learning Research 21.1 (2020): 5485-5551.</p>
+
+<!--[4] [AKBC 2022 Keynote Talks](https://wise-supervision.github.io/#Speakers)-->
 
 <p>[5] Code4Struct<a href="https://arxiv.org/abs/2210.12810" rel="external nofollow noopener" target="_blank">[arXiv]</a></p>
 
@@ -607,6 +610,8 @@ co/blog/peft</p>
 <p>[16] GPT understands, too: Liu, X., et al. “GPT understands, too. arXiv.” arXiv preprint arXiv:2103.10385 (2021).</p>
 
 <p>[17] Touvron, Hugo, et al. “Llama 2: Open foundation and fine-tuned chat models.” arXiv preprint arXiv:2307.09288 (2023).</p>
+
+<p>[18] Chung, Hyung Won, et al. “Scaling instruction-finetuned language models.” arXiv preprint arXiv:2210.11416 (2022).</p>
 
 
       </d-article>
