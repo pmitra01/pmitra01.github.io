@@ -10,8 +10,8 @@ This is a simple post that journals two things.
 
 First, the long urge I have had to conduct a basic experiment to see for myself 'how many (training) data points a 
 (training) prompt was worth'. Given a task we wish to train an LLM for, can we yield comparable or even better 
-models with a mere fraction of the labeled data points than before, by simply transforming the training examples 
-differently? I share the experiment setup, code and observations from fine-tuning a series of models on the 
+models with a mere fraction of the labeled data points traditionally used by simply transforming the training 
+examples differently? I share the experiment setup, code and observations from fine-tuning a series of models on the 
 rudimentary task of topic classification which illustrates the sample efficiency of instruction tuning with prompts.
 
 Second, it consolidates reflections on what makes prompting powerful: (1) tracing how the use of prompting an LLM 
@@ -42,9 +42,9 @@ workshop. During two of the keynote talks [4] <d-footnote>Keynote talks [4] by P
 Prompt, Entail'](https://dl.acm.org/doi/abs/10.1145/3477495.3532786)[6] paradigm for information extraction.
 </d-footnote>, it first dawned upon me how simple, versatile and effective the tactic of prompting was not just for 
 in-context learning at inference time, but also to further fine-tune LLMs on desired tasks. Prompts allowed the 
-framing of tasks in a way that was closer to the pretraining objective (next token/sentence prediction) of a class 
-of LLMs. Suddenly I felt as though I had been looking at so many of the NLP tasks around knowledge extraction 
-unhelpfully for years. Made me think about some problems from first principles again.
+framing of tasks in a way that was closer to the pretraining objective (next token/sentence prediction) for certain 
+LLM architectures. All of a sudden I felt as though I had been looking at so many of the NLP tasks around knowledge 
+extraction unhelpfully for years. Made me think about some problems from first principles again.
 
 But then the ChatGPT-era happened and this newfound wonder with prompts felt antiquated, followed by personal 
 genAI-fatigue. However, I am ready to revive this article because (1) I had to scratch the itch, (2) the intuition 
@@ -58,13 +58,19 @@ The structure of the post is as follows:
 
 
 <h3 id="1-experiment">Experiment</h3>
-To quantitatively observe the sample efficiency of fine-tuning LLMs using prompt-completion pairs instead of 
-conventional supervised  classification on input-output labelled data points, I performed the following experiment 
+Experiment Objective: To quantitatively observe the sample efficiency of fine-tuning LLMs using prompt-completion pairs 
+instead of conventional supervised classification on input-output labelled data points, I performed an experiment 
 inspired by the paper '[How many data points is a prompt worth]((https://arxiv.org/abs/2103.08493))' [7]. The 
 authors perform a number of experiments on 6 different benchmark NLP tasks and find that prompt-based instruction 
 tuned LLMs outperform the classifier-head based model, while needing 100x-1000x fewer prompt data points. In my 
 version of the experiment, I kept things lightweight with a rudimentary causal LM GPT2, and a simple discriminative task.
 
+Experiment design: The experiment trains a series of models on text classification task in two training paradigms 
+using the same base generative LLM. The former training setup uses the more conventional approach of fitting a 
+classifier head after LLM layers, and training the classifier (with or without frozen LLM layers) to map input 
+documents to a fixed set of output labels. The latter setup directly tunes (all or part of) the LLM layers to 
+autoregressively generate the correct output label given a prompt containing an instruction and the input document 
+text to be classified. Each model is trained only for 5 epochs.
 
 **Experiment Setup**
 - __Task__: Topic classification of news articles
@@ -73,20 +79,17 @@ version of the experiment, I kept things lightweight with a rudimentary causal L
 
 - Comment on choice of task and dataset:
   - I was inclined towards testing generative LLMs on discriminative NLP tasks because discriminative tasks are more 
-    easily verifiable for accuracy than abstractive or open-ended language tasks. <d-footnote>Note on roads not taken: 
-    There is no reason why this experiment could not be done on harder sequence extractive/classification tasks such 
-    as extractive QA, or generative abstractive tasks. While those would have made for a more satisfying experiment, 
-    I abandoned my training efforts mid-way, in favour of cheaper topic classification. Purely generative tasks which do not 
-    have deterministic outputs (e.g. abstractive summarisation or Q/A) were left out of scope as they were 
-    harder to evaluate objectively.</d-footnote>
-  - Discriminative vs generative setup: The experiment trains a series of models on text classification task in two 
-    training paradigms using the same base LLM. The former training setup uses the more conventional approach of 
-    fitting a classifier head after LLM layers, and training the classifier (with or without frozen LLM layers) to 
-    map input documents to a fixed set of output labels. The latter setup directly tunes (all or part of) the LLM 
-    layers to autoregressively generate the correct output label given a prompt containing an instruction and the 
-    input document text to be classified. Each model is trained only for 5 epochs.
+    easily verifiable for accuracy than abstractive or open-ended language tasks.
+    <d-footnote>Note on roads not taken:
+    (1) There is no reason why this experiment could not be done on harder sequence extractive/classification tasks 
+    such as extractive QA, or generative abstractive tasks. While those would have made for a more satisfying 
+    experiment, I abandoned my training efforts mid-way, in favour of cheaper topic classification. (2) Purely 
+    generative tasks which do not have deterministic outputs (e.g. abstractive summarisation or Q/A) were also left out of scope as they were 
+    harder to evaluate objectively. Eugene Yan does a good job of documenting the landscape of challenges 
+    and techniques available: https://eugeneyan.com/writing/abstractive/. 
+    </d-footnote>
   - Label Predictions: To obtain a class label for input sentences in the generative case, I used a verbaliser to 
-    map the output of the first 5 generated tokens from the fine-tuned LLM to map to one of the 4 class labels using 
+    map the output of the first 3 generated tokens from the fine-tuned LLM to map to one of the 4 class labels using 
     a scoring function such as bert-score and rouge metrics.
   - Varying the dataset size for training: I implement a custom sequential data sampler in Pytorch that increments 
     the training data volume exponentially to the base 10. I start my training runs with 10 data points, and then 
@@ -96,8 +99,9 @@ version of the experiment, I kept things lightweight with a rudimentary causal L
   - Training curves: I then obtain training curves for each setup, by training 5 different models on incremental 
     segments of the labeled dataset. The classification accuracy on a held out test set is plotted for each 
     model tuned on varying training data sizes. 
-  - Verdict: The hold-out test-set performance trends for both classifier head and the prompt-based instruction tuning 
-    scenarios are compared to compute the relative data advantage either method may have on the other.
+  - Process for reaching a verdict: The hold-out test-set performance trends for both classifier head and the 
+    prompt-based instruction tuning scenarios are compared to compute the relative data advantage either method may 
+    have on the other.
 
   
 #### Implementation notes
@@ -277,7 +281,7 @@ in-context learning using prompting might be reasonable in your use case. If not
 approaches to adapt the LLM to your task.
 
 
-#### Takeaways:
+#### Takeaways
 - If you want to use a smaller model for specific tasks and domains, the current industry/academia verdict is that 
   fine-tuning can get you there faster and more reliably than prompt engineering. 
 - Directly adapting an LLM's output to a task using fine-tuning with prompt-completion pairs (instruction tuning, or 
@@ -289,8 +293,9 @@ approaches to adapt the LLM to your task.
   one most cares about is a critical aid to  deciding between approaches for LLM application.
 
 ### Acknowledgements
-I am very grateful to Corey Harper's for going above and beyond with his editorial review of the post, as well as 
-Raahul Dutta for his helpful feedback. 
+I am very grateful to [Corey Harper](https://www.linkedin.com/in/corey-harper-7628509/) for going above and beyond 
+with his editorial review of the post, and to [Raahul Dutta](https://www.linkedin.com/in/raahuldutta/) for his 
+helpful feedback. 
  
 ### References
 [1] [Against LLM maximalism](https://explosion.ai/blog/against-llm-maximalism) by Mathhew Honnibal
