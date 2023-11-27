@@ -391,32 +391,26 @@ LLM to answer from within the provided context </a></p>
 <div class="highlight"><pre class="highlight"><code> <span class="kn">from</span> <span class="n">langchain.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
     
  <span class="n">RAG_PROMPT_string</span> <span class="o">=</span> <span class="p">(</span><span class="sh">"""</span><span class="se">\
-</span><span class="s">    
+</span><span class="s"> Human: Here is a question from a medical professional: 
+&lt;question&gt; 
+{user_query}
+&lt;/question&gt;
     
- Human: Here is a question from a medical professional: </span><span class="se">\n\n</span><span class="s">&lt;question&gt; </span><span class="se">\n</span><span class="s">{user_query}</span><span class="se">\n</span><span class="s">&lt;/question&gt;
-    
-    
- Here are some search results from a medical encyclopedia that you must reference to answer the question:
-    
+ Here are some search results from a medical encyclopedia that you must reference to answer the question: 
  {extracts}
     
-    
  Once again, here is the question:
-    
  &lt;question&gt;
-    
  {user_query}
-    
  &lt;/question&gt;
     
  Your objective is to write a high quality, concise answer
  for the medical professional within &lt;answer&gt; &lt;/answer&gt; tags. Otherwise, write ANSWER NOT FOUND)
     
- Assistant: &lt;answer&gt;</span><span class="se">\n\n</span><span class="s"> </span><span class="sh">"""</span>  <span class="c1"># noqa: E501
-</span> <span class="p">)</span>
+ Assistant: &lt;answer&gt;</span><span class="se">\n\n</span><span class="s"> </span><span class="sh">"""</span> 
+ <span class="p">)</span>
     
  <span class="n">rag_prompt_template</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">.</span><span class="nf">from_template</span><span class="p">(</span><span class="n">RAG_PROMPT_string</span><span class="p">)</span>
-    
 </code></pre></div>    </div>
 
     <div class="language-python highlighter-rouge">
