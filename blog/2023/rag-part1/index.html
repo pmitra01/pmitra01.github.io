@@ -158,11 +158,12 @@
 
 <p>Retrieval Augmented Generation (RAG) [1,2,3] is a popular LLM-application pattern to incorporate external domain 
 knowledge from retrieval databases to condition the generative LLM output. This post implements a RAG pipeline with 
-Llama 2 on one’s local machine for long-form QA on medical text content. Three reasons for this post:</p>
+<a href="https://arxiv.org/abs/2307.09288" rel="external nofollow noopener" target="_blank">Llama 2</a>[4] on one’s local machine for long-form QA on biomedical text. Three 
+reasons for this post:</p>
 <ol>
   <li>
-    <p>This is Part 1 of the 2-part blog series. It lays down the necessary RAG pipeline apparatus and baseline
-performance for the task of long-form medical QA that will be required later in Part 2 where I experiment with
+    <p>This is Part 1 of the 2-part blog series. It provides the necessary RAG pipeline apparatus as well as baseline 
+performance for the task of long-form medical QA that will be later required in Part 2 where I experiment with
 fine-tuning the LLM.</p>
   </li>
   <li>
@@ -191,14 +192,14 @@ with external vector databases/retrieval mechanisms.</p>
 
 <p>Note, RAG workflows commonly adapt off-the-shelf LLMs using sophisticated prompt-engineering techniques
 to coax the LLM to perform a desired generative task, rather than fine-tuning the model.
-Relying solely on <a href="https://towardsdatascience.com/all-you-need-to-know-about-in-context-learning-55bde1180610" rel="external nofollow noopener" target="_blank">In-Context-Learning</a><d-footnote> 
+Relying solely on prompts at inference time for <a href="https://towardsdatascience.com/all-you-need-to-know-about-in-context-learning-55bde1180610" rel="external nofollow noopener" target="_blank">In-Context-Learning</a><d-footnote> 
 A more advanced read on topic can be found in Stanford AI Blog's 'How in-context-learning works': 
-https://ai.stanford.edu/blog/understanding-incontext/ </d-footnote> from prompts at inference time to perform 
-complex reasoning tasks is brittle and has implications on 
-correctness of LLM answer, consistency of output format, high inference costs due to lengthy multi-step prompts, etc.
-The challenges are amplified when operating in domains that have very stringent safety concerns and near zero 
-tolerance for misinformation. Fine-tuning is known to produce more reliable and consistent LLM output than solely 
-relying on in-context learning through clever prompts. That experiment is left to Part 2 of this series.</p>
+https://ai.stanford.edu/blog/understanding-incontext/ </d-footnote> to perform complex reasoning tasks is brittle. 
+It has implications on correctness of LLM answer, consistency of output format, high inference costs due to lengthy 
+multi-step prompts, etc. The challenges are amplified when operating in domains that have very stringent safety 
+concerns and near zero tolerance for misinformation. Fine-tuning is known to produce more reliable and consistent 
+LLM output than solely relying on in-context learning through clever prompts. That experiment is left to Part 2 of 
+this series.</p>
 
 <h3 id="task-details">Task Details</h3>
 <p>The premise of this tutorial is applying generative LLMs within a RAG framework for a (1) conversational QA task, 
@@ -254,16 +255,21 @@ rounded z-depth-1" width="auto" height="auto" data-zoomable="" onerror="this.one
 <ul>
   <li>Prerequisites
     <ol>
-      <li><a href="#prereq-llamacpp">Download LLaMA model, and prepare for inference locally</a></li>
-      <li><a href="#prereq-qdrant">Vectorise text documents in a vector database, and create searchable index</a></li>
+      <li>Download LLaMA model, and prepare for inference locally <a href="#prereq-llamacpp">-&gt;</a>
+</li>
+      <li>Vectorise text documents in a vector database, and create searchable index <a href="#prereq-qdrant">-&gt;</a>
+</li>
     </ol>
   </li>
   <li>RAG inference workflow for each incoming user query:
     <ol>
-      <li><a href="#rag-retrieval">retrieve relevant documents by querying vector database (here, Qdrant search engine)</a></li>
-      <li><a href="#rag-promptconstruct">construct an LLM prompt with user question, and relevant documents - instructing LLM to answer from within the
- provided context</a></li>
-      <li><a href="#rag-promptllm">Send prompt to LLM server to generate an answer</a></li>
+      <li>Retrieve relevant documents by querying vector database (here, Qdrant search engine) <a href="#rag-retrieval">-&gt;</a>
+</li>
+      <li>Construct an LLM prompt with user question, and relevant documents - instructing LLM to answer from within the
+ provided context <a href="#rag-promptconstruct">-&gt;</a>
+</li>
+      <li>Send prompt to LLM server to generate an answer <a href="#rag-promptllm">-&gt;</a>
+</li>
       <li>Optional - Postprocess LLM output (parsing, add guardrails) before displaying to user</li>
     </ol>
   </li>
@@ -323,10 +329,12 @@ instructions <a href="https://github.com/qdrant/qdrant-client#fast-embeddings--s
     </ul>
 
     <div class="language-python highlighter-rouge">
-<div class="highlight"><pre class="highlight"><code> <span class="n">qdrant_client</span> <span class="o">=</span> <span class="nc">QdrantClient</span><span class="p">(</span><span class="sh">"</span><span class="s">:memory:</span><span class="sh">"</span><span class="p">)</span>
- <span class="n">EMBEDDING_MODEL_NAME</span> <span class="o">=</span> <span class="sh">"</span><span class="s">BAAI/bge-base-en</span><span class="sh">"</span>
- <span class="n">qdrant_client</span><span class="p">.</span><span class="nf">set_model</span><span class="p">(</span><span class="n">EMBEDDING_MODEL_NAME</span><span class="p">)</span>
+<div class="highlight"><pre class="highlight"><code> <span class="kn">from</span> <span class="n">qdrant_client</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">QdrantClient</span>
+
  <span class="n">COLLECTION_NAME</span> <span class="o">=</span> <span class="sh">"</span><span class="s">pubmedqa</span><span class="sh">"</span>
+ <span class="n">EMBEDDING_MODEL_NAME</span> <span class="o">=</span> <span class="sh">"</span><span class="s">BAAI/bge-base-en</span><span class="sh">"</span>
+ <span class="n">qdrant_client</span> <span class="o">=</span> <span class="nc">QdrantClient</span><span class="p">(</span><span class="sh">"</span><span class="s">:memory:</span><span class="sh">"</span><span class="p">)</span>
+ <span class="n">qdrant_client</span><span class="p">.</span><span class="nf">set_model</span><span class="p">(</span><span class="n">EMBEDDING_MODEL_NAME</span><span class="p">)</span>
     
  <span class="n">qdrant_client</span><span class="p">.</span><span class="nf">create_collection</span><span class="p">(</span>
      <span class="n">collection_name</span><span class="o">=</span><span class="n">COLLECTION_NAME</span><span class="p">,</span>
@@ -340,8 +348,7 @@ instructions <a href="https://github.com/qdrant/qdrant-client#fast-embeddings--s
  <span class="p">)</span>
     
  <span class="c1"># Qdrant search engine client makes it very easy to search a query against a database, and retrieve top-k documents 
-</span>    
- <span class="n">search_hits</span> <span class="o">=</span> <span class="n">qdrant_client</span><span class="p">.</span><span class="nf">query</span><span class="p">(</span>
+</span> <span class="n">search_hits</span> <span class="o">=</span> <span class="n">qdrant_client</span><span class="p">.</span><span class="nf">query</span><span class="p">(</span>
      <span class="n">collection_name</span><span class="o">=</span><span class="n">collection_name</span><span class="p">,</span>
      <span class="n">query_text</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
      <span class="n">limit</span><span class="o">=</span><span class="n">top_k</span><span class="p">)</span>
@@ -473,7 +480,11 @@ project. This provides python bindings to the llama.cpp project.</p>
 </li>
   <li>The Complete Overview to Retrieval Augmented Generation (RAG) <a href="https://medium.%0Acom/gopenai/the-complete-guide-to-retrieval-augmented-generation-rag-3ce54a57d8be" rel="external nofollow noopener" target="_blank">[Link]</a>
 </li>
-  <li>In-Context-Learning</li>
+  <li>Llama 2: Open Foundation and Fine-Tuned Chat Models <a href="https://arxiv.org/abs/2307.09288" rel="external nofollow noopener" target="_blank">[Link]</a>
+</li>
+  <li>How does in-context learning work? A framework for understanding the differences from traditional supervised 
+learning <a href="https://ai.stanford.edu/blog/understanding-incontext/" rel="external nofollow noopener" target="_blank">[Link]</a>
+</li>
   <li>FastEmbed: Fast and Lightweight Embedding Generation for Text <a href="https://qdrant.tech/articles/fastembed/" rel="external nofollow noopener" target="_blank">[Link]</a>
 </li>
 </ol>
