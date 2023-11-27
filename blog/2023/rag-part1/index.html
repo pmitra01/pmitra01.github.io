@@ -289,20 +289,21 @@ purpose machine. The llama.cpp can be deployed as a cli tool, or deploy it as a 
 </li>
       <li>Install the llama.cpp project: Follow comprehensive setup instructions provided <a href="https://github.com/ggerganov/llama.cpp#usage" rel="external nofollow noopener" target="_blank">here</a>
 </li>
-      <li>Quantise the desired llama model (Following instructions from llama.cpp as seen <a href="https://github.com/ggerganov/llama.cpp#prepare-data--run" rel="external nofollow noopener" target="_blank">here</a>). I used the 7B and 7B-chat models. In a nutshell:</li>
-    </ul>
-    <ul>
-      <li>After obtaining the original LLaMA weights, place them in ./models</li>
-      <li>Install python dependencies from requirements.txt file</li>
-      <li>Convert the model to <a href="https://huggingface.co/TheBloke/CodeLlama-34B-Instruct-GGUF#about-gguf" rel="external nofollow noopener" target="_blank">GGUF</a> FP16 format <code class="language-plaintext highlighter-rouge">python3 convert.py models/7B-chat/</code>
+      <li>Quantise the desired llama model (Following instructions from llama.cpp as seen <a href="https://github.com/ggerganov/llama.cpp#prepare-data--run" rel="external nofollow noopener" target="_blank">here</a>). I used the 7B and 7B-chat models. In a nutshell:
+        <ul>
+          <li>After obtaining the original LLaMA weights, place them in ./models</li>
+          <li>Install python dependencies from requirements.txt file</li>
+          <li>Convert the model to <a href="https://huggingface.co/TheBloke/CodeLlama-34B-Instruct-GGUF#about-gguf" rel="external nofollow noopener" target="_blank">GGUF</a> FP16 
+format <code class="language-plaintext highlighter-rouge">python3 convert.py models/7B-chat/</code>
 </li>
-      <li>Perform model quantization. This is a technique to reduce the memory footprint of the LLM weights by using a 
-different data type to store the entries of the weight matrices. Read more about it <a href="https://huggingface.co/blog/hf-bitsandbytes-integration" rel="external nofollow noopener" target="_blank">here</a>
-Below I perform 8-bit model quantization of the ggml model
-        <div class="language-python highlighter-rouge">
-<div class="highlight"><pre class="highlight"><code>   <span class="p">.</span><span class="o">/</span><span class="n">quantize</span> <span class="p">.</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="mi">7</span><span class="n">B</span><span class="o">-</span><span class="n">chat</span><span class="o">/</span><span class="n">ggml</span><span class="o">-</span><span class="n">model</span><span class="o">-</span><span class="n">f16</span><span class="p">.</span><span class="n">gguf</span> <span class="p">.</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="mi">7</span><span class="n">B</span><span class="o">-</span><span class="n">chat</span><span class="o">/</span><span class="n">ggml</span><span class="o">-</span><span class="n">model</span><span class="o">-</span><span class="n">q8_0</span><span class="p">.</span><span class="n">gguf</span> <span class="n">q8_0</span>
-</code></pre></div>        </div>
-        <p>The quantized model thus obtained will be used under the hood for the RAG pipeline below</p>
+          <li>Perform model quantization. This is a technique to reduce the memory footprint of the LLM weights by using a 
+different data type to store the entries of the weight matrices. Read more about it <a href="https://huggingface.co/blog/hf-bitsandbytes-integration" rel="external nofollow noopener" target="_blank">here</a>.
+I perform 8-bit model quantization, and the resultant model is used in the subsequent RAG pipeline.
+            <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  <span class="p">.</span><span class="o">/</span><span class="n">quantize</span> <span class="p">.</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="mi">7</span><span class="n">B</span><span class="o">-</span><span class="n">chat</span><span class="o">/</span><span class="n">ggml</span><span class="o">-</span><span class="n">model</span><span class="o">-</span><span class="n">f16</span><span class="p">.</span><span class="n">gguf</span> <span class="p">.</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="mi">7</span><span class="n">B</span><span class="o">-</span><span class="n">chat</span><span class="o">/</span><span class="n">ggml</span><span class="o">-</span><span class="n">model</span><span class="o">-</span><span class="n">q8_0</span><span class="p">.</span><span class="n">gguf</span> <span class="n">q8_0</span>
+</code></pre></div>            </div>
+          </li>
+        </ul>
       </li>
     </ul>
   </li>
