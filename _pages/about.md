@@ -13,26 +13,18 @@ profile:
     <p>123 your address street</p>
     <p>Your City, State 12345</p>*/
 
-/*news: true  # includes a list of news items */
-/*selected_papers: true # includes a list of papers marked as "selected={true}" */
-/*social: true  # includes social icons at the bottom of the page */
 ---
 
-The hope is that at some point, this blog will be an introduction to who I am, or who I want you to think I am. 
-And more crucially, that it helps me keep honest to exploring and evolving who that entity is.
+Along the professional dimension, I practice and think about ML. I specialise in ML applications for knowledge 
+discovery from text. Most recently I have been working on conversational search for healthcare professionals.
 
+I use this blog-post to explore ideas, and write about experiments - both related to my profession, and away from it.
+The hope is that it keeps honest in exploring curiosities and evolving my ideas.
 
-Along the professional dimension, I practice and think about ML. I specialise in ML
-applications for knowledge discovery from text. 
 
 <!--Put your address / P.O. box / other info right below your picture. You can also disable any these elements by  
 editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and 
  will render your [publications page](/al-folio/publications/) automatically. -->
 
 
-
-**EYEBALL GRAB!** 
-I am also starting with a 30 day writing challenge to stir/clean the thought pot, and build that 
-writing muscle. You can follow the series on [Twitter](https://twitter.com/pmitra01) or [TypeShare](https://typeshare.co/payalmitra)
-
-Contact: [LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)  |  [Twitter](https://twitter.com/pmitra01)
+Contact: [LinkedIn](https://www.linkedin.com/in/payal-mitra-062b781aa/)  \|  [X(Twitter)](https://twitter.com/pmitra01)
