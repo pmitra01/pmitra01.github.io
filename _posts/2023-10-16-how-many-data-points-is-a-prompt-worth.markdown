@@ -124,7 +124,7 @@ text to be classified. Each model is trained only for 5 epochs.
 
 <div class="row mt-3"  style="width:600px; height:400px align:right">
     <div class="col-sm mt-3 mt-md-0" >
-    <figcaption> Figure 1: Test-set performance of models against number of data points tehy were trained on 
+    <figcaption> Figure 1: Test-set performance of models against number of data points they were trained on 
 </figcaption>
         {% include figure.html path="assets/img/sample_efficiency/data_points_vs_prompts_ag_news_w_bordered.png" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
