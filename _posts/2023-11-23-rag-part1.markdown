@@ -194,34 +194,27 @@ database at inference time.
     from langchain.prompts import PromptTemplate
     
     RAG_PROMPT_string = ("""\
+    Human: Here is a question from a medical professional: 
+   <question> 
+   {user_query}
+   </question>
     
-    
-    Human: Here is a question from a medical professional: \n\n<question> \n{user_query}\n</question>
-    
-    
-    Here are some search results from a medical encyclopedia that you must reference to answer the question:
-    
+    Here are some search results from a medical encyclopedia that you must reference to answer the question: 
     {extracts}
     
-    
     Once again, here is the question:
-    
     <question>
-    
     {user_query}
-    
     </question>
     
     Your objective is to write a high quality, concise answer
     for the medical professional within <answer> </answer> tags. Otherwise, write ANSWER NOT FOUND)
     
-    Assistant: <answer>\n\n """  # noqa: E501
+    Assistant: <answer>\n\n """ 
     )
     
     rag_prompt_template = PromptTemplate.from_template(RAG_PROMPT_string)
-    
     ```
-    
     
    ```python
     from typing import List
