@@ -9,9 +9,10 @@ date:   2023-11-23 15:32:17 +0100
 
 Retrieval Augmented Generation (RAG) [1,2,3] is a popular LLM-application pattern to incorporate external domain 
 knowledge from retrieval databases to condition the generative LLM output. This post implements a RAG pipeline with 
-Llama 2 on one's local machine for long-form QA on medical text content. Three reasons for this post:
-1. This is Part 1 of the 2-part blog series. It lays down the necessary RAG pipeline apparatus and baseline
-   performance for the task of long-form medical QA that will be required later in Part 2 where I experiment with
+[Llama 2](https://arxiv.org/abs/2307.09288)[4] on one's local machine for long-form QA on biomedical text. Three 
+reasons for this post:
+1. This is Part 1 of the 2-part blog series. It provides the necessary RAG pipeline apparatus as well as baseline 
+   performance for the task of long-form medical QA that will be later required in Part 2 where I experiment with
    fine-tuning the LLM.
 
 2. For democratised access, I wanted to implement RAG entirely on my local machine with smaller LLMs. No expensive Google Colab compute or LLMs 
@@ -37,14 +38,14 @@ with external vector databases/retrieval mechanisms.
 
 Note, RAG workflows commonly adapt off-the-shelf LLMs using sophisticated prompt-engineering techniques
 to coax the LLM to perform a desired generative task, rather than fine-tuning the model.
-Relying solely on [In-Context-Learning](https://towardsdatascience.com/all-you-need-to-know-about-in-context-learning-55bde1180610)<d-footnote> 
+Relying solely on prompts at inference time for [In-Context-Learning](https://towardsdatascience.com/all-you-need-to-know-about-in-context-learning-55bde1180610)<d-footnote> 
 A more advanced read on topic can be found in Stanford AI Blog's 'How in-context-learning works': 
-https://ai.stanford.edu/blog/understanding-incontext/ </d-footnote> from prompts at inference time to perform 
-complex reasoning tasks is brittle and has implications on 
-correctness of LLM answer, consistency of output format, high inference costs due to lengthy multi-step prompts, etc.
-The challenges are amplified when operating in domains that have very stringent safety concerns and near zero 
-tolerance for misinformation. Fine-tuning is known to produce more reliable and consistent LLM output than solely 
-relying on in-context learning through clever prompts. That experiment is left to Part 2 of this series.
+https://ai.stanford.edu/blog/understanding-incontext/ </d-footnote> to perform complex reasoning tasks is brittle. 
+It has implications on correctness of LLM answer, consistency of output format, high inference costs due to lengthy 
+multi-step prompts, etc. The challenges are amplified when operating in domains that have very stringent safety 
+concerns and near zero tolerance for misinformation. Fine-tuning is known to produce more reliable and consistent 
+LLM output than solely relying on in-context learning through clever prompts. That experiment is left to Part 2 of 
+this series.
 
 ### Task Details
 The premise of this tutorial is applying generative LLMs within a RAG framework for a (1) conversational QA task, 
@@ -79,14 +80,14 @@ rounded z-depth-1" zoomable=true %}
 
 Here is an overview of the steps in the implementation workflow, in sequence 
 * Prerequisites 
-  1. [Download LLaMA model, and prepare for inference locally](#prereq-llamacpp) 
-  2. [Vectorise text documents in a vector database, and create searchable index](#prereq-qdrant)
+  1. Download LLaMA model, and prepare for inference locally [->](#prereq-llamacpp) 
+  2. Vectorise text documents in a vector database, and create searchable index [->](#prereq-qdrant)
 
 * RAG inference workflow for each incoming user query: 
-  1. [retrieve relevant documents by querying vector database (here, Qdrant search engine)](#rag-retrieval) 
-  2. [construct an LLM prompt with user question, and relevant documents - instructing LLM to answer from within the
-   provided context](#rag-promptconstruct) 
-  3. [Send prompt to LLM server to generate an answer](#rag-promptllm) 
+  1. Retrieve relevant documents by querying vector database (here, Qdrant search engine) [->](#rag-retrieval) 
+  2. Construct an LLM prompt with user question, and relevant documents - instructing LLM to answer from within the
+   provided context [->](#rag-promptconstruct) 
+  3. Send prompt to LLM server to generate an answer [->](#rag-promptllm) 
   4. Optional - Postprocess LLM output (parsing, add guardrails) before displaying to user
 
 Let's elaborate on each of these steps
@@ -99,16 +100,16 @@ Let's elaborate on each of these steps
   * Download Llama model (weights, tokenizer, etc) using the meta request form and instructions provided [here](https://github.com/facebookresearch/llama?fbclid=IwAR3pMaYrinZM5-DEp8i1IaLtTxKe7lNbEzv_-b8_9DMKOGXvRxuqSRZYEgs#download)
   * Install the llama.cpp project: Follow comprehensive setup instructions provided [here](https://github.com/ggerganov/llama.cpp#usage)
   * Quantise the desired llama model (Following instructions from llama.cpp as seen [here](https://github.com/ggerganov/llama.cpp#prepare-data--run)). I used the 7B and 7B-chat models. In a nutshell:
-    * After obtaining the original LLaMA weights, place them in ./models
-    * Install python dependencies from requirements.txt file
-    * Convert the model to [GGUF](https://huggingface.co/TheBloke/CodeLlama-34B-Instruct-GGUF#about-gguf) FP16 format `python3 convert.py models/7B-chat/`
-    * Perform model quantization. This is a technique to reduce the memory footprint of the LLM weights by using a 
-      different data type to store the entries of the weight matrices. Read more about it [here](https://huggingface.co/blog/hf-bitsandbytes-integration)
-      Below I perform 8-bit model quantization of the ggml model
+        * After obtaining the original LLaMA weights, place them in ./models
+        * Install python dependencies from requirements.txt file
+        * Convert the model to [GGUF](https://huggingface.co/TheBloke/CodeLlama-34B-Instruct-GGUF#about-gguf) FP16 
+       format `python3 convert.py models/7B-chat/`
+        * Perform model quantization. This is a technique to reduce the memory footprint of the LLM weights by using a 
+      different data type to store the entries of the weight matrices. Read more about it [here](https://huggingface.co/blog/hf-bitsandbytes-integration).
+I perform 8-bit model quantization, and the resultant model is used in the subsequent RAG pipeline.
       ```python
          ./quantize ./models/7B-chat/ggml-model-f16.gguf ./models/7B-chat/ggml-model-q8_0.gguf q8_0
       ```
-  The quantized model thus obtained will be used under the hood for the RAG pipeline below
 
 2. <a name="prereq-qdrant">Vectorise text documents in a vector database, and create searchable index</a> 
 
@@ -131,10 +132,12 @@ Let's elaborate on each of these steps
     used as document filters or key-word searches to augment vector search
     
     ```python
-    qdrant_client = QdrantClient(":memory:")
-    EMBEDDING_MODEL_NAME = "BAAI/bge-base-en"
-    qdrant_client.set_model(EMBEDDING_MODEL_NAME)
+    from qdrant_client import models, QdrantClient
+
     COLLECTION_NAME = "pubmedqa"
+    EMBEDDING_MODEL_NAME = "BAAI/bge-base-en"
+    qdrant_client = QdrantClient(":memory:")
+    qdrant_client.set_model(EMBEDDING_MODEL_NAME)
     
     qdrant_client.create_collection(
         collection_name=COLLECTION_NAME,
@@ -148,7 +151,6 @@ Let's elaborate on each of these steps
     )
     
     # Qdrant search engine client makes it very easy to search a query against a database, and retrieve top-k documents 
-    
     search_hits = qdrant_client.query(
         collection_name=collection_name,
         query_text=query,
@@ -272,5 +274,7 @@ References:
 2. Prompt Engineering Guide - Retrieval Augmented Generation (RAG) [[Link]](https://www.promptingguide.ai/techniques/rag)
 3. The Complete Overview to Retrieval Augmented Generation (RAG) [[Link]](https://medium.
    com/gopenai/the-complete-guide-to-retrieval-augmented-generation-rag-3ce54a57d8be)
-4. In-Context-Learning
-5. FastEmbed: Fast and Lightweight Embedding Generation for Text [[Link]](https://qdrant.tech/articles/fastembed/)
+4. Llama 2: Open Foundation and Fine-Tuned Chat Models [[Link]](https://arxiv.org/abs/2307.09288)
+5. How does in-context learning work? A framework for understanding the differences from traditional supervised 
+   learning [[Link]](https://ai.stanford.edu/blog/understanding-incontext/)
+6. FastEmbed: Fast and Lightweight Embedding Generation for Text [[Link]](https://qdrant.tech/articles/fastembed/)
